@@ -10,7 +10,7 @@ export const getApi = async () => {
   api.interceptors.request.use(
     (config) => {
       config.headers["X-Riot-Token"] =
-        "RGAPI-bd073724-9f88-4121-974a-26bd49b2f924";
+        "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
 
       return config;
     },
@@ -36,7 +36,7 @@ export async function buscaPuuid(name, tag) {
   api.interceptors.request.use(
     (config) => {
       config.headers["X-Riot-Token"] =
-        "RGAPI-bd073724-9f88-4121-974a-26bd49b2f924";
+        "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
 
       return config;
     },
@@ -56,7 +56,7 @@ export async function buscaIdsMatches(puuid){
   api.interceptors.request.use(
     (config) => {
       config.headers["X-Riot-Token"] =
-        "RGAPI-bd073724-9f88-4121-974a-26bd49b2f924";
+        "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
 
       return config;
     },
@@ -78,7 +78,7 @@ export async function buscaMatchesById(idsMatches) {
     api.interceptors.request.use(
       (config) => {
         config.headers["X-Riot-Token"] =
-          "RGAPI-bd073724-9f88-4121-974a-26bd49b2f924";
+          "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
   
         return config;
       },
