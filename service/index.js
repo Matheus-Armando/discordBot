@@ -3,9 +3,8 @@ import axios from "axios";
 const { API_BASE_URL, X_RIOT_TOKEN, API_URL_UUID, name, tag } = process.env;
 
 export const getApi = async () => {
-  const api = axios.create({
-    baseURL: API_BASE_URL,
-  });
+  const api = axios.create(
+  );
 
   api.interceptors.request.use(
     (config) => {
@@ -24,69 +23,66 @@ export const getApi = async () => {
 
 export async function buscaInfosMatches(name, tag) {
   const puuid = await buscaPuuid(name, tag);
-  const ids = buscaIdsMatches(puuid);
+  const ids = await buscaIdsMatches(puuid);
   return await buscaMatchesById(ids);
 }
 
-export async function buscaPuuid(name, tag) {
-  const api = axios.create({
-    baseURL: `${API_URL_UUID}/${name}/${tag}`,
-  });
+export async function buscaPuuid() {
+  try {
+    const api = await getApi();
 
-  api.interceptors.request.use(
-    (config) => {
-      config.headers["X-Riot-Token"] =
-        "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
+    const response = await api.get(`${API_URL_UUID}/${name}/${tag}`);
 
-      return config;
-    },
-    (error) => {
-      Promise.reject(error);
+    if (response.status !== 200) {
+      throw new Error("Erro na solicitação: " + response.status);
     }
-  );
-
-  return api;
+    const data = response.data;
+    const puuid = data.puuid;
+    
+    return puuid;
+  } 
+  catch (error) {
+    // Trate erros
+    console.error(error);
+  }
 };
 
 export async function buscaIdsMatches(puuid){
-  const api = axios.create({
-    baseURL: `${API_BASE_URL}/by-puuid/${puuid}/ids?start=0&count=10`,
-  });
+  try {
+    const api = await getApi();
 
-  api.interceptors.request.use(
-    (config) => {
-      config.headers["X-Riot-Token"] =
-        "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
+    const response = await api.get(`${API_BASE_URL}/by-puuid/${puuid}/ids?start=0&count=1`);
 
-      return config;
-    },
-    (error) => {
-      Promise.reject(error);
+    if (response.status !== 200) {
+      throw new Error("Erro na solicitação: " + response.status);
     }
-  );
-
-  return api;
-}
-
-export async function buscaMatchesById(idsMatches) {
-  const infosMatches = [];
-  for (const id of idsMatches) {
-    const api = axios.create({
-      baseURL: `${API_BASE_URL}/${puuid}`,
-    });
-  
-    api.interceptors.request.use(
-      (config) => {
-        config.headers["X-Riot-Token"] =
-          "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
-  
-        return config;
-      },
-      (error) => {
-        Promise.reject(error);
-      }
-    );
-    infosMatches.push(api);
+    const data = response.data;
+    const matchesId = data
+    return matchesId;
+  } 
+  catch (error) {
+    // Trate erros
+    console.error(error); 
   }
-  return infosMatches;
-}
+};
+
+export async function buscaMatchesById(matches) {
+  try {
+    const api = await getApi();
+
+    const response = await api.get(`${API_BASE_URL}/${matches}`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro na solicitação: " + response.status);
+    }
+    const data = response.data;
+    const gameCreation = data.info.gameCreation;
+    //const dataFormatada = converteTempo(gameCreation);
+    
+    return gameCreation;
+  } 
+  catch (error) {
+    // Trate erros
+    console.error(error);
+  }
+};
