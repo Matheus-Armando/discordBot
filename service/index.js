@@ -9,7 +9,7 @@ export const getApi = async () => {
   api.interceptors.request.use(
     (config) => {
       config.headers["X-Riot-Token"] =
-        "RGAPI-5f4c179f-bdd5-4a0c-877f-29fafa2bb0c0";
+        "RGAPI-1caaa495-e296-4ac7-a875-f7867792f5be";
 
       return config;
     },
