@@ -1,16 +1,15 @@
 import axios from "axios";
 
-const { API_BASE_URL, X_RIOT_TOKEN } = process.env;
+const { API_BASE_URL, X_RIOT_TOKEN, API_URL_UUID, name, tag } = process.env;
 
 export const getApi = async () => {
-  const api = axios.create({
-    baseURL: API_BASE_URL,
-  });
+  const api = axios.create(
+  );
 
   api.interceptors.request.use(
     (config) => {
       config.headers["X-Riot-Token"] =
-        "RGAPI-96c539d8-bd20-49b5-a6ad-1bf9e6b2a2f2";
+        X_RIOT_TOKEN;
 
       return config;
     },
@@ -20,4 +19,70 @@ export const getApi = async () => {
   );
 
   return api;
+};
+
+export async function buscaInfosMatches(name, tag) {
+  const puuid = await buscaPuuid(name, tag);
+  const ids = await buscaIdsMatches(puuid);
+  return await buscaMatchesById(ids);
+}
+
+export async function buscaPuuid() {
+  try {
+    const api = await getApi();
+
+    const response = await api.get(`${API_URL_UUID}/${name}/${tag}`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro na solicitação: " + response.status);
+    }
+    const data = response.data;
+    const puuid = data.puuid;
+    
+    return puuid;
+  } 
+  catch (error) {
+    // Trate erros
+    console.error(error);
+  }
+};
+
+export async function buscaIdsMatches(puuid){
+  try {
+    const api = await getApi();
+
+    const response = await api.get(`${API_BASE_URL}/by-puuid/${puuid}/ids?start=0&count=1`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro na solicitação: " + response.status);
+    }
+    const data = response.data;
+    const matchesId = data
+    return matchesId;
+  } 
+  catch (error) {
+    // Trate erros
+    console.error(error); 
+  }
+};
+
+export async function buscaMatchesById(matches) {
+  try {
+    const api = await getApi();
+
+    const response = await api.get(`${API_BASE_URL}/${matches}`);
+
+    if (response.status !== 200) {
+      throw new Error("Erro na solicitação: " + response.status);
+    }
+    const data = response.data;
+    const gameCreation = data.info.gameCreation;
+    //const dataFormatada = converteTempo(gameCreation);
+    
+    return gameCreation;
+  } 
+  catch (error) {
+    // Trate erros
+    console.error(error);
+  }
 };
