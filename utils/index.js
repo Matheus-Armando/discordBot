@@ -11,3 +11,16 @@ export const converteTempo = (timestampUnix) => {
   };
   return data.toLocaleDateString("pt-BR", options);
 };
+
+export const comparaData = (dataFormatada) => {
+  
+const matchInfo = dataFormatada;
+const dataAtual = new Date();
+const saida = ""
+if (matchInfo.getTime() === dataAtual.getTime()) {
+  saida = "jogou";
+} else {
+  saida = "n jogou";
+}
+  return saida
+}
