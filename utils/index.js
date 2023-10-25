@@ -4,10 +4,6 @@ export const converteTempo = (timestampUnix) => {
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    timeZoneName: "short",
   };
   return data.toLocaleDateString("pt-BR", options);
 };
@@ -15,12 +11,13 @@ export const converteTempo = (timestampUnix) => {
 export const comparaData = (dataFormatada) => {
   
 const matchInfo = dataFormatada;
-const dataAtual = new Date();
-const saida = ""
-if (matchInfo.getTime() === dataAtual.getTime()) {
-  saida = "jogou";
+const dataAtual = converteTempo(new Date());
+let saida = ""
+console.log("Data da partida:" + matchInfo + " - Data atual: " + dataAtual)
+if (matchInfo === dataAtual) {
+  saida = "O tales jogou lol hoje";
 } else {
-  saida = "n jogou";
+  saida = "O tales está doente";
 }
   return saida
 }
