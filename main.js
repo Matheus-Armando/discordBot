@@ -4,48 +4,15 @@ import { main } from "./utils/index.js"
 import { converteTempo } from "./utils/index.js"
 import { comparaData } from "./utils/index.js"
 import { buscaIdsMatches, buscaPuuid, getApi, buscaMatchesById} from "./service/index.js";
+const { DISCORD_BOT_TOKEN, CLIENT_ID, GUILD_ID, THALES_ID, galoNick } = process.env;
 
-const { THALES_ID, galoNick } = process.env;
+import { Client, GatewayIntentBits } from 'discord.js';
+import { Events } from 'discord.js';
 
-/*const main = async () => {
-  try {
-    const api = await getApi();
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-    const response = await api.get(THALES_ID);
+client.once(Events.ClientReady, c => {
+  console.log(`Logged in as ${c.user.tag}`);
+});
 
-    if (response.status !== 200) {
-      throw new Error("Erro na solicitação: " + response.status);
-    }
-
-    const data = response.data;
-    const gameCreation = data.info.gameCreation;
-    const dataFormatada = converteTempo(gameCreation);
-    console.log("ultimo jogo:", dataFormatada);
-  } catch (error) {
-    // Trate erros
-    console.error(error);
-  }
-};*/
-
-/*const main = async () => {
-  try {
-    const api = await getApi();
-
-    const response = await api.get(galoNick);
-
-    if (response.status !== 200) {
-      throw new Error("Erro na solicitação: " + response.status);
-    }
-
-    const data = response.data;
-    const puuid = data.puuid;
-    console.log("player uuid:", puuid);
-  } catch (error) {
-    // Trate erros
-    console.error(error);
-  }
-};*/
-
-
-
-console.log(main());
+client.login(DISCORD_BOT_TOKEN);
