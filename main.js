@@ -1,6 +1,6 @@
 import "dotenv/config";
 import axios from "axios";
-
+import { main } from "./utils/index.js"
 import { converteTempo } from "./utils/index.js"
 import { comparaData } from "./utils/index.js"
 import { buscaIdsMatches, buscaPuuid, getApi, buscaMatchesById} from "./service/index.js";
@@ -46,15 +46,6 @@ const { THALES_ID, galoNick } = process.env;
   }
 };*/
 
-const saida = ""
 
-const main = async () => {
-  const puuid = await buscaPuuid()
-  const matches = await buscaIdsMatches(puuid)
-  const matchInfo = await buscaMatchesById(matches)
-  const dataFormatada = converteTempo(matchInfo);
-  const comparacao = comparaData(dataFormatada);
-  console.log(comparacao)
-}
 
-main();
+console.log(main());

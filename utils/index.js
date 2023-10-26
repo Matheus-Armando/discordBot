@@ -1,3 +1,8 @@
+import "dotenv/config";
+import axios from "axios";
+import { buscaIdsMatches, buscaPuuid, getApi, buscaMatchesById} from "../service/index.js";
+
+const { THALES_ID, galoNick } = process.env;
 export const converteTempo = (timestampUnix) => {
   const data = new Date(timestampUnix);
   const options = {
@@ -19,4 +24,14 @@ if (matchInfo === dataAtual) {
   saida = "n jogou";
 }
   return saida
+}
+
+export const main = async () => {
+  const puuid = await buscaPuuid()
+  const matches = await buscaIdsMatches(puuid)
+  const matchInfo = await buscaMatchesById(matches)
+  const dataFormatada = converteTempo(matchInfo);
+  const comparacao = comparaData(dataFormatada);
+  console.log("comparacao:", comparacao);
+  return comparacao
 }
