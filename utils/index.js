@@ -4,10 +4,6 @@ export const converteTempo = (timestampUnix) => {
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    timeZoneName: "short",
   };
   return data.toLocaleDateString("pt-BR", options);
 };
@@ -15,9 +11,9 @@ export const converteTempo = (timestampUnix) => {
 export const comparaData = (dataFormatada) => {
   
 const matchInfo = dataFormatada;
-const dataAtual = new Date();
-const saida = ""
-if (matchInfo.getTime() === dataAtual.getTime()) {
+const dataAtual = converteTempo(new Date());
+let saida = ""
+if (matchInfo === dataAtual) {
   saida = "jogou";
 } else {
   saida = "n jogou";

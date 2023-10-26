@@ -53,8 +53,8 @@ const main = async () => {
   const matches = await buscaIdsMatches(puuid)
   const matchInfo = await buscaMatchesById(matches)
   const dataFormatada = converteTempo(matchInfo);
- // const comparacao = comparaData(dataFormatada);
-  console.log(dataFormatada)
+  const comparacao = comparaData(dataFormatada);
+  console.log(comparacao)
 }
 
 main();
