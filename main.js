@@ -8,6 +8,13 @@ const { DISCORD_BOT_TOKEN, CLIENT_ID, GUILD_ID, THALES_ID, galoNick } = process.
 
 import { Client, GatewayIntentBits } from 'discord.js';
 import { Events } from 'discord.js';
+import { readdirSync } from "fs";
+
+import  path from 'path';
+const commandsPath = path.join('commands');
+
+const commandsFiles = readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+console.log(commandsFiles);
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
