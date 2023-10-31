@@ -1,14 +1,18 @@
-import Fastify from "fastify";
-const fastify = Fastify({
-  logger: true,
-});
+import 'dotenv/config'
 
-// Declare a route
-fastify.get("/", async function handler(request, reply) {
-  return { hello: "world" };
-});
+import fastify from 'fastify'
 
-// Run the server!
-fastify.listen({ port: 3000 }).then(() => {
-  fastify.log.info("Server is running");
-});
+const server = fastify()
+
+server.get('/ping', async (request, reply) => {
+  return 'pong\n'
+})
+
+server.listen({ port: 8080 }, (err, address) => {
+  if (err !== null) {
+    console.error(err)
+    process.exit(1)
+  }
+
+  console.log(`Server listening at ${address}`)
+})
