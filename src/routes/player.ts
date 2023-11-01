@@ -2,6 +2,8 @@ import { type FastifyInstance, type FastifyRequest } from 'fastify'
 
 import { getApi } from '../service'
 
+const ROUTE_PATH = 'riot/account/v1/accounts'
+
 export const playerRoutes = async (server: FastifyInstance): Promise<any> => {
   server.get('/puuid', async function handler (request: FastifyRequest, reply) {
     const { gameName, tagLine } = request.query as { gameName: any, tagLine: any }
@@ -16,7 +18,7 @@ export const playerRoutes = async (server: FastifyInstance): Promise<any> => {
 
     const api = await getApi()
 
-    const accountInformation = await api.get(`${process.env.API_BASE_URL_ACCOUNT}/accounts/by-riot-id/${gameName}/${tagLine}`)
+    const accountInformation = await api.get(`${process.env.API_BASE_URL}/${ROUTE_PATH}/by-riot-id/${gameName}/${tagLine}`)
 
     return accountInformation.data
   })

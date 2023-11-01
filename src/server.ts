@@ -4,12 +4,14 @@ import pino from 'pino'
 import { playerRoutes } from './routes/player'
 
 import 'dotenv/config'
+import { matchesRoutes } from './routes/matches'
 
 const server = fastify({
   logger: pino({ level: 'info' })
 })
 
 server.register(playerRoutes, { prefix: 'player' })
+server.register(matchesRoutes, { prefix: 'matches' })
 
 server.listen({ port: 3000 }, (err, address) => {
   if (err !== null) {
