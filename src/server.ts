@@ -9,7 +9,7 @@ const server = fastify({
   logger: pino({ level: 'info' })
 })
 
-server.register(playerRoutes)
+server.register(playerRoutes, { prefix: 'player' })
 
 server.listen({ port: 3000 }, (err, address) => {
   if (err !== null) {

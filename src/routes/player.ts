@@ -3,7 +3,7 @@ import { type FastifyInstance, type FastifyRequest } from 'fastify'
 import { getApi } from '../service'
 
 export const playerRoutes = async (server: FastifyInstance): Promise<any> => {
-  server.get('/player/puuid', async function handler (request: FastifyRequest, reply) {
+  server.get('/puuid', async function handler (request: FastifyRequest, reply) {
     const { gameName, tagLine } = request.query as { gameName: any, tagLine: any }
 
     if (!gameName) {
