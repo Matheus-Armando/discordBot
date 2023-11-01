@@ -1,6 +1,9 @@
 import { fastify } from 'fastify'
 import pino from 'pino'
+
 import { playerRoutes } from './routes/player'
+
+import 'dotenv/config'
 
 const server = fastify({
   logger: pino({ level: 'info' })
