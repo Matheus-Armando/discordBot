@@ -18,7 +18,7 @@ const commandsFiles = readdirSync(commandsPath).filter(file => file.endsWith('.j
 
 //console.log(commandsFiles);
 
-teste.execute();
+console.log(teste.data);
 //teste.data
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
