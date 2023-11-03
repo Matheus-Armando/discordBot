@@ -18,30 +18,26 @@ interface RelatedPlayers {
 
 export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
   server.get('/by-puuid', async function handler (request: FastifyRequest, reply) {
-    try {
-      const { puuid, numberMatches } = request.query as ByPuuid
-      let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
+    const { puuid, numberMatches } = request.query as ByPuuid
+    let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
 
-      if (!puuid) {
-        return await reply.code(400).send({ error: 'The puuid property is required' })
-      }
-
-      if (numberMatches) {
-        apiUrl = `${apiUrl}?count=${numberMatches}`
-      }
-
-      const api = await getApi()
-
-      const playerMatches = await api.get(apiUrl)
-
-      if (playerMatches.data.length === 0) {
-        return await reply.code(400).send({ error: 'This player has no matches' })
-      }
-
-      return playerMatches.data
-    } catch {
-      return await reply.code(500).send({ error: 'Internal server error' })
+    if (!puuid) {
+      return await reply.code(400).send({ error: 'The puuid property is required' })
     }
+
+    if (numberMatches) {
+      apiUrl = `${apiUrl}?count=${numberMatches}`
+    }
+
+    const api = await getApi()
+
+    const playerMatches = await api.get(apiUrl)
+
+    if (playerMatches.data.length === 0) {
+      return await reply.code(400).send({ error: 'This player has no matches' })
+    }
+
+    return playerMatches.data
   })
 
   server.get('/by-puuid/played-today', async function handler (request: FastifyRequest, reply) {

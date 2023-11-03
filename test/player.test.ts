@@ -24,7 +24,7 @@ describe('#Player Suite', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: `/player/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
+        url: `/players/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
       })
 
       expect(response.statusCode).toBe(400)
@@ -39,7 +39,7 @@ describe('#Player Suite', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: `/player/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
+        url: `/players/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
       })
 
       expect(response.statusCode).toBe(400)
@@ -54,7 +54,7 @@ describe('#Player Suite', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: `/player/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
+        url: `/players/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
       })
 
       expect(response.statusCode).toBe(200)

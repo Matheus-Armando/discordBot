@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios, { type AxiosInstance } from 'axios'
 
-export const getApi = async (): Promise<any> => {
+export const getApi: () => Promise<AxiosInstance> = async () => {
   const api = axios.create()
 
   api.interceptors.request.use(
