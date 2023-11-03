@@ -8,9 +8,9 @@
     "start": "node index.js",
     "dev": "tsx watch src/server.ts",
     "lint": "eslint src --ext .ts --fix",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand test/",
-    "test:dev": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --watch test/",
-    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --runInBand test/"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --injectGlobals false --runInBand test/",
+    "test:dev": "NODE_OPTIONS=--experimental-vm-modules npx jest --injectGlobals false --runInBand --watch test/",
+    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --injectGlobals false --runInBand test/"
   },
   "keywords": [],
   "author": "mahatma-devs",
