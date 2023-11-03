@@ -22,7 +22,7 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
     let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
 
     if (!puuid) {
-      return await reply.code(400).send({ error: 'The gameName property is required' })
+      return await reply.code(400).send({ error: 'The puuid property is required' })
     }
 
     if (numberMatches) {
@@ -40,12 +40,39 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
     return playerMatches.data
   })
 
+  server.get('/by-puuid/played-today', async function handler (request: FastifyRequest, reply) {
+    const { puuid } = request.query as ByPuuid
+
+    if (!puuid) {
+      return await reply.code(400).send({ error: 'The puuid property is required' })
+    }
+
+    const api = await getApi()
+
+    const now = new Date()
+
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+
+    const startDate = Math.floor(startOfDay.getTime() / 1000)
+    const endDate = Math.floor(endOfDay.getTime() / 1000)
+
+    const playerMatches = await api.get(`${ROUTE_PATH}/by-puuid/${puuid}/ids?startTime=${startDate}&endTime=${endDate}`)
+
+    if (playerMatches.data.length === 0) {
+      return await reply.code(400).send({ error: 'This player has no matches' })
+    }
+
+    return playerMatches.data
+  })
+
   server.get('/related-players', async function handler (request: FastifyRequest, reply) {
     const { puuid, numberMatches } = request.query as ByPuuid
     let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
 
     if (!puuid) {
-      return await reply.code(400).send({ error: 'The gameName property is required' })
+      return await reply.code(400).send({ error: 'The puuid property is required' })
     }
 
     if (numberMatches) {
