@@ -1,4 +1,4 @@
-import { type FastifyInstance, type FastifyRequest } from 'fastify'
+import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 
 import { getApi } from '../service'
 
@@ -115,6 +115,36 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
     return results
   })
 
+  server.get('/matches-information', async function handler (request: FastifyRequest, reply) {
+    const { puuid, numberMatches } = request.query as ByPuuid
+    let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
+
+    if (!puuid) {
+      return await reply.code(400).send({ error: 'The gameName property is required' })
+    }
+
+    if (numberMatches) {
+      apiUrl = `${apiUrl}?count=${numberMatches}`
+    }
+
+    const api = await getApi()
+
+    const playerMatches = await api.get(apiUrl)
+
+    if (playerMatches.data.length === 0) {
+      return await reply.code(400).send({ error: 'This player has no matches' })
+    }
+
+    const matchesInformationPromises = await playerMatches.data.map(async (matchId: string) => {
+      const matchInformation = await api.get(`${ROUTE_PATH}/${matchId}`)
+      return matchInformation.data
+    })
+
+    const participantMatchesInformation = await Promise.all(matchesInformationPromises)
+
+    return participantMatchesInformation
+  })
+
   server.get('/by-puuid/matches/resume', async function handler (request: FastifyRequest, reply) {
     const { puuid, numberMatches } = request.query as ByPuuid
     let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
@@ -170,6 +200,56 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
     const assistAvg = assists / playerMatches.data.length
 
     return { win, lose, deathAvg, killAvg, assistAvg }
+  })
+
+  server.get('/by-puuid/champions', async function handler (request: FastifyRequest, reply: FastifyReply) {
+    const { puuid, numberMatches } = request.query as ByPuuid
+    let apiUrl = `${ROUTE_PATH}/by-puuid/${puuid}/ids`
+
+    if (!puuid) {
+      return await reply.code(400).send({ error: 'The gameName property is required' })
+    }
+
+    if (numberMatches) {
+      apiUrl = `${apiUrl}?count=${numberMatches}`
+    }
+
+    const api = await getApi()
+    const playerMatches = await api.get(apiUrl)
+
+    if (playerMatches.data.length === 0) {
+      return await reply.code(400).send({ error: 'This player has no matches' })
+    }
+
+    const matchesInformationPromises = await playerMatches.data.map(async (matchId: string) => {
+      const matchInformation = await api.get(`${ROUTE_PATH}/${matchId}`)
+      return matchInformation.data
+    })
+
+    const participantMatchesInformation = await Promise.all(matchesInformationPromises)
+    const heroes: string[] = []
+
+    participantMatchesInformation.forEach((match) => {
+      const actualPlayer = match.info.participants.find((participant: any) => {
+        return participant.puuid === puuid
+      })
+
+      heroes.push(actualPlayer.championName)
+    })
+
+    const heroesWithCount = Array.from(new Set(heroes)).map(hero => {
+      let count = 0
+
+      for (const innerHero of heroes) {
+        if (innerHero === hero) {
+          count++
+        }
+      }
+
+      return { hero, count }
+    })
+
+    return heroesWithCount
   })
 
   server.get('/by-puuid/players', async function handler (request: FastifyRequest, reply) {
