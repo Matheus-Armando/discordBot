@@ -5,7 +5,6 @@ import { Client, GatewayIntentBits, IntentsBitField } from 'discord.js';
 import { Events } from 'discord.js';
 
 
-
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds,
@@ -16,12 +15,19 @@ client.once(Events.ClientReady, async c => {
   console.log(`Logged in as ${c.user.tag}`);
 });
 
-client.on('interactionCreate', async (interaction) => {
+client.on(Events.InteractionCreate, async (interaction) => {
   if(!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    interaction.reply(await main());}
-  });
+  if (interaction.commandName === 'ping'){
+  try {
+    interaction.reply("sera que vai?");
+    interaction.followUp(await main());}
+      
+   catch (error) {
+    console.log(error);
+  }
+}
+});    
 
 
 client.login(DISCORD_BOT_TOKEN);

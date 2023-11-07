@@ -20,9 +20,9 @@ const matchInfo = dataFormatada;
 const dataAtual = converteTempo(new Date());
 let saida = ""
 if (matchInfo === dataAtual) {
-  saida = "O tales jogou lol hoje";
+  saida = "Tales jogou lol hoje!";
 } else {
-  saida = "O tales está doente";
+  saida = "O tales está doente e não jogou lol hoje!";
 }
   return saida
 }
