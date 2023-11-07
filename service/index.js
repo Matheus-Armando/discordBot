@@ -38,13 +38,14 @@ export async function buscaPuuid() {
     }
     const data = response.data;
     const puuid = data.puuid;
-    
+    console.log("busquei o puuid");
     return puuid;
   } 
   catch (error) {
     // Trate erros
     console.error(error);
   }
+  
 };
 
 export async function buscaIdsMatches(puuid){
@@ -58,12 +59,14 @@ export async function buscaIdsMatches(puuid){
     }
     const data = response.data;
     const matchesId = data
+    console.log("busquei o id da partida");
     return matchesId;
   } 
   catch (error) {
     // Trate erros
     console.error(error); 
   }
+  
 };
 
 export async function buscaMatchesById(matches) {
@@ -78,11 +81,12 @@ export async function buscaMatchesById(matches) {
     const data = response.data;
     const gameCreation = data.info.gameCreation;
     //const dataFormatada = converteTempo(gameCreation);
-    
+    console.log("busquei a data da partida");
     return gameCreation;
   } 
   catch (error) {
     // Trate erros
     console.error(error);
   }
+  
 };

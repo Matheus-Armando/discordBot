@@ -10,6 +10,7 @@ export const converteTempo = (timestampUnix) => {
     month: "short",
     day: "numeric",
   };
+  console.log("converti a data");
   return data.toLocaleDateString("pt-BR", options);
 };
 
@@ -32,6 +33,8 @@ export const main = async () => {
   const matchInfo = await buscaMatchesById(matches)
   const dataFormatada = converteTempo(matchInfo);
   const comparacao = comparaData(dataFormatada);
+  console.log(comparacao);
   return comparacao
 }
+
 

@@ -12,16 +12,15 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
   ] });
 
-client.once(Events.ClientReady, c => {
+client.once(Events.ClientReady, async c => {
   console.log(`Logged in as ${c.user.tag}`);
-  //console.log(main());
 });
 
 client.on('interactionCreate', async (interaction) => {
   if(!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'ping') {
-    interaction.reply(main());}
+    interaction.reply(await main());}
   });
 
 
