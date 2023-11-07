@@ -32,6 +32,6 @@ export const main = async () => {
   const matchInfo = await buscaMatchesById(matches)
   const dataFormatada = converteTempo(matchInfo);
   const comparacao = comparaData(dataFormatada);
-  console.log("comparacao:", comparacao);
   return comparacao
 }
+
