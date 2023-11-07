@@ -25,7 +25,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
   }
  
-  if (interaction.commandName === "teste") {
+  if (interaction.commandName === "lol") {
     try {
       interaction.reply("Espere o client de bosta responder");
       const name = interaction.options.getString("nick");
