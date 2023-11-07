@@ -2,7 +2,8 @@ import "dotenv/config";
 import axios from "axios";
 import { buscaIdsMatches, buscaPuuid, getApi, buscaMatchesById} from "../service/index.js";
 
-const { THALES_ID, galoNick } = process.env;
+const { THALES_ID, galoNick, name2, tag2 } = process.env;
+
 export const converteTempo = (timestampUnix) => {
   const data = new Date(timestampUnix);
   const options = {
@@ -10,7 +11,7 @@ export const converteTempo = (timestampUnix) => {
     month: "short",
     day: "numeric",
   };
-  console.log("converti a data");
+  console.log(data.toLocaleDateString("pt-BR", options));
   return data.toLocaleDateString("pt-BR", options);
 };
 
@@ -27,8 +28,8 @@ if (matchInfo === dataAtual) {
   return saida
 }
 
-export const main = async () => {
-  const puuid = await buscaPuuid()
+export const main = async (name, tag) => {
+  const puuid = await buscaPuuid(name, tag)
   const matches = await buscaIdsMatches(puuid)
   const matchInfo = await buscaMatchesById(matches)
   const dataFormatada = converteTempo(matchInfo);
@@ -37,4 +38,14 @@ export const main = async () => {
   return comparacao
 }
 
-
+export const mainTales = async () => {
+  const name = name2 
+  const tag = tag2
+  const puuid = await buscaPuuid(name, tag)
+  const matches = await buscaIdsMatches(puuid)
+  const matchInfo = await buscaMatchesById(matches)
+  const dataFormatada = converteTempo(matchInfo);
+  const comparacao = comparaData(dataFormatada);
+  console.log(comparacao);
+  return comparacao
+}

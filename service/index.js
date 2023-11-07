@@ -20,16 +20,15 @@ export const getApi = async () => {
 
   return api;
 };
-setInterval(() => {
-   async function buscaInfosMatches(name, tag) {
-    const puuid = await buscaPuuid(name, tag);
-    const ids = await buscaIdsMatches(puuid);
-    return await buscaMatchesById(ids);
-  }
-}, 60000);
+
+export async function buscaInfosMatches(name, tag) {
+  const puuid = await buscaPuuid(name, tag);
+  const ids = await buscaIdsMatches(puuid);
+  return await buscaMatchesById(ids);
+}
 
 
-export async function buscaPuuid() {
+export async function buscaPuuid(name, tag) {
   try {
     const api = await getApi();
 
