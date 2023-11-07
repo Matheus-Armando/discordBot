@@ -1,60 +1,40 @@
 import "dotenv/config";
-import axios from "axios";
+const { DISCORD_BOT_TOKEN, CLIENT_ID, GUILD_ID, THALES_ID, galoNick } =
+  process.env;
+import { main, mainTales } from "./utils/index.js";
+import { Client, GatewayIntentBits, IntentsBitField } from "discord.js";
+import { Events } from "discord.js";
 
-import { converteTempo } from "./utils/index.js"
-import { comparaData } from "./utils/index.js"
-import { buscaIdsMatches, buscaPuuid, getApi, buscaMatchesById} from "./service/index.js";
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+});
 
-const { THALES_ID, galoNick } = process.env;
+client.once(Events.ClientReady, async (c) => {
+  console.log(`Logged in as ${c.user.tag}`);
+});
 
-/*const main = async () => {
-  try {
-    const api = await getApi();
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
 
-    const response = await api.get(THALES_ID);
-
-    if (response.status !== 200) {
-      throw new Error("Erro na solicitação: " + response.status);
+  if (interaction.commandName === "tales") {
+    try {
+      interaction.reply("Espere o client de bosta responder");
+      interaction.followUp(await mainTales());
+    } catch (error) {
+      console.log(error);
     }
-
-    const data = response.data;
-    const gameCreation = data.info.gameCreation;
-    const dataFormatada = converteTempo(gameCreation);
-    console.log("ultimo jogo:", dataFormatada);
-  } catch (error) {
-    // Trate erros
-    console.error(error);
   }
-};*/
-
-/*const main = async () => {
-  try {
-    const api = await getApi();
-
-    const response = await api.get(galoNick);
-
-    if (response.status !== 200) {
-      throw new Error("Erro na solicitação: " + response.status);
+ 
+  if (interaction.commandName === "lol") {
+    try {
+      interaction.reply("Espere o client de bosta responder");
+      const name = interaction.options.getString("nick");
+      const tag = interaction.options.getString("tag");
+      interaction.followUp(await main(name, tag));
+    } catch (error) {
+      console.log(error);
     }
-
-    const data = response.data;
-    const puuid = data.puuid;
-    console.log("player uuid:", puuid);
-  } catch (error) {
-    // Trate erros
-    console.error(error);
   }
-};*/
+});
 
-const saida = ""
-
-const main = async () => {
-  const puuid = await buscaPuuid()
-  const matches = await buscaIdsMatches(puuid)
-  const matchInfo = await buscaMatchesById(matches)
-  const dataFormatada = converteTempo(matchInfo);
-  const comparacao = comparaData(dataFormatada);
-  console.log(comparacao)
-}
-
-main();
+client.login(DISCORD_BOT_TOKEN);
