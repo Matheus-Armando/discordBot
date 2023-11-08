@@ -8,8 +8,8 @@ export const getApi = async () => {
 
   api.interceptors.request.use(
     (config) => {
-      config.headers["X-Riot-Token"] =
-        "RGAPI-1caaa495-e296-4ac7-a875-f7867792f5be";
+      config.headers["X-Riot-Token"] = X_RIOT_TOKEN
+        //"RGAPI-1caaa495-e296-4ac7-a875-f7867792f5be";
 
       return config;
     },
@@ -44,7 +44,7 @@ export async function buscaPuuid(name, tag) {
   } 
   catch (error) {
     // Trate erros
-    console.error(error);
+    console.error("erro no buscaPuuid");
   }
   
 };
@@ -65,7 +65,7 @@ export async function buscaIdsMatches(puuid){
   } 
   catch (error) {
     // Trate erros
-    console.error(error); 
+    console.error("erro no buscaIdsMatches"); 
   }
   
 };
@@ -87,7 +87,7 @@ export async function buscaMatchesById(matches) {
   } 
   catch (error) {
     // Trate erros
-    console.error(error);
+    console.error("erro no buscaMatches");
   }
   
 };

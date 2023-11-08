@@ -4,6 +4,7 @@ const { DISCORD_BOT_TOKEN, CLIENT_ID, GUILD_ID, THALES_ID, galoNick } =
 import { main, mainTales } from "./utils/index.js";
 import { Client, GatewayIntentBits, IntentsBitField } from "discord.js";
 import { Events } from "discord.js";
+import { buscaPuuid } from "./service/index.js";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
@@ -11,6 +12,9 @@ const client = new Client({
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`Logged in as ${c.user.tag}`);
+  const name = 'GaloPitapigas'
+  const tag = '1572'
+  console.log(buscaPuuid(name, tag))
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

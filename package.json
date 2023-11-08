@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/Matheus-Armando/discordBot#readme",
   "dependencies": {
-    "axios": "^1.5.1",
+    "axios": "^1.6.0",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "file-url": "^4.0.0",
