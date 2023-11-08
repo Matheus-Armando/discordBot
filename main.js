@@ -12,9 +12,6 @@ const client = new Client({
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`Logged in as ${c.user.tag}`);
-  const name = 'GaloPitapigas'
-  const tag = '1572'
-  console.log(buscaPuuid(name, tag))
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
