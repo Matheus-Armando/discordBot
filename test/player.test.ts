@@ -16,13 +16,26 @@ describe('#Player Suite', () => {
       app.close()
     })
 
+    async function makeDelayedRequest (options: any): Promise<any> {
+      return await new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          try {
+            const response = await app.inject(options)
+            resolve(response)
+          } catch (error) {
+            reject(error)
+          }
+        }, 2000)
+      })
+    }
+
     it('should return status 400 when gameName is not informed', async () => {
       const mockInvalidPlayer = {
         gameName: '',
         tagLine: '123'
       }
 
-      const response = await app.inject({
+      const response = await makeDelayedRequest({
         method: 'GET',
         url: `/players/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
       })
@@ -37,7 +50,7 @@ describe('#Player Suite', () => {
         tagLine: ''
       }
 
-      const response = await app.inject({
+      const response = await makeDelayedRequest({
         method: 'GET',
         url: `/players/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
       })
@@ -52,7 +65,7 @@ describe('#Player Suite', () => {
         tagLine: '1572'
       }
 
-      const response = await app.inject({
+      const response = await makeDelayedRequest({
         method: 'GET',
         url: `/players/puuid?gameName=${mockInvalidPlayer.gameName}&tagLine=${mockInvalidPlayer.tagLine}`
       })

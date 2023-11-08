@@ -7,26 +7,78 @@ const USER_PUUID = 'B3CUQPBJVMCo56zojiKz_uBgAJkV0CdzlLiGYJb_ziGimmKp-RReRleuR3Do
 const NUMBER_MATCHES = 3
 
 describe('#Matches suite', () => {
-  describe('#get matches ids by puuid', () => {
-    let app: FastifyInstance
+  let app: FastifyInstance
 
-    beforeAll(async () => {
-      app = server
-      await app.ready()
-    })
+  beforeAll(async () => {
+    app = server
+    await app.ready()
+  })
 
-    afterAll(() => {
-      app.close()
+  afterAll(() => {
+    app.close()
+  })
+
+  async function makeDelayedRequest (options: any): Promise<any> {
+    return await new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          const response = await app.inject(options)
+          resolve(response)
+        } catch (error) {
+          reject(error)
+        }
+      }, 1300)
     })
+  }
+
+  describe('#get matches by player puuid', () => {
+    const BASE_URL = '/matches/by-puuid'
 
     it('should return status 400 when puuid is not informed', async () => {
       const mockInvalidPlayer = {
         puuid: ''
       }
 
-      const response = await app.inject({
+      const response = await makeDelayedRequest({
         method: 'GET',
-        url: `/matches/by-puuid?puuid=${mockInvalidPlayer.puuid}`
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(JSON.parse(response.body)).toEqual({ error: 'The puuid property is required' })
+    })
+
+    it('should return status 200 when puuid is informed', async () => {
+      const mockPlayer = {
+        puuid: USER_PUUID,
+        numberMatches: NUMBER_MATCHES
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockPlayer.puuid}&numberMatches=${mockPlayer.numberMatches}`
+      })
+
+      expect(response.statusCode).toBe(200)
+      expect(JSON.parse(response.body)).toBeInstanceOf(Array)
+
+      const parsedData = JSON.parse(response.body)
+      expect(parsedData).toBeInstanceOf(Array)
+      expect(parsedData).toHaveLength(NUMBER_MATCHES)
+    })
+  })
+
+  describe('#get matches played today', () => {
+    const BASE_URL = '/matches/by-puuid/played-today'
+
+    it('should return status 400 when puuid is not informed', async () => {
+      const mockInvalidPlayer = {
+        puuid: ''
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
       })
 
       expect(response.statusCode).toBe(400)
@@ -38,31 +90,118 @@ describe('#Matches suite', () => {
         puuid: USER_PUUID
       }
 
-      const response = await app.inject({
+      const response = await makeDelayedRequest({
         method: 'GET',
-        url: `/matches/by-puuid?puuid=${mockPlayer.puuid}`
+        url: `${BASE_URL}?puuid=${mockPlayer.puuid}`
       })
 
       expect(response.statusCode).toBe(200)
       expect(JSON.parse(response.body)).toBeInstanceOf(Array)
     })
+  })
 
-    it('should return an array with the size of the prop numberMatches', async () => {
+  describe('#get related players to a puuid', () => {
+    const BASE_URL = '/matches/related-players'
+
+    it('should return status 400 when puuid is not informed', async () => {
       const mockInvalidPlayer = {
+        puuid: ''
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(JSON.parse(response.body)).toEqual({ error: 'The puuid property is required' })
+    })
+  })
+
+  describe('#get matches-information to a puuid', () => {
+    const BASE_URL = '/matches/matches-information'
+
+    it('should return status 400 when puuid is not informed', async () => {
+      const mockInvalidPlayer = {
+        puuid: ''
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(JSON.parse(response.body)).toEqual({ error: 'The puuid property is required' })
+    })
+  })
+
+  describe('#get by-puuid matches resume to a puuid', () => {
+    const BASE_URL = '/matches/by-puuid/matches/resume'
+
+    it('should return status 400 when puuid is not informed', async () => {
+      const mockInvalidPlayer = {
+        puuid: ''
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(JSON.parse(response.body)).toEqual({ error: 'The puuid property is required' })
+    })
+
+    it('should return status 200 when puuid and numbermatches is informed', async () => {
+      const mockPlayer = {
         puuid: USER_PUUID,
         numberMatches: NUMBER_MATCHES
       }
 
-      const response = await app.inject({
+      const response = await makeDelayedRequest({
         method: 'GET',
-        url: `/matches/by-puuid?puuid=${mockInvalidPlayer.puuid}&numberMatches=${mockInvalidPlayer.numberMatches}`
+        url: `${BASE_URL}?puuid=${mockPlayer.puuid}`
       })
 
       expect(response.statusCode).toBe(200)
+      expect(JSON.parse(response.body)).toBeInstanceOf(Object)
+    })
+  })
 
-      const parsedData = JSON.parse(response.body)
-      expect(parsedData).toBeInstanceOf(Array)
-      expect(parsedData).toHaveLength(NUMBER_MATCHES)
+  describe('#get by-puuid champions to a puuid', () => {
+    const BASE_URL = '/matches/by-puuid/champions'
+
+    it('should return status 400 when puuid is not informed', async () => {
+      const mockInvalidPlayer = {
+        puuid: ''
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(JSON.parse(response.body)).toEqual({ error: 'The puuid property is required' })
+    })
+  })
+
+  describe('#get by-puuid players to a puuid', () => {
+    const BASE_URL = '/matches/by-puuid/players'
+
+    it('should return status 400 when puuid is not informed', async () => {
+      const mockInvalidPlayer = {
+        puuid: ''
+      }
+
+      const response = await makeDelayedRequest({
+        method: 'GET',
+        url: `${BASE_URL}?puuid=${mockInvalidPlayer.puuid}`
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(JSON.parse(response.body)).toEqual({ error: 'The puuid property is required' })
     })
   })
 })
