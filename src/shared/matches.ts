@@ -1,20 +1,61 @@
-import { ROUTE_PATH } from '../constants'
-import { getApi } from '../service'
 import { type Participant, type RelatedPlayers } from '../types'
 
-export const handleFindRelatedPlayers = async (playerMatches: any, puuid: string): Promise<any> => {
-  const api = await getApi()
+export const handleMatchesResume = (participantMatchesInformation: [], playerMatches: any, puuid: string): any => {
+  let win = 0
+  let lose = 0
+  let deaths = 0
+  let kills = 0
+  let assists = 0
 
-  const matchesInformationPromises = await playerMatches.data.map(async (matchId: string) => {
-    const matchInformation = await api.get(`${ROUTE_PATH}/${matchId}`)
-    return matchInformation.data
+  if (participantMatchesInformation.length === 0) {
+    throw new Error('there is no participant matches information')
+  }
+
+  if (!playerMatches.data) {
+    throw new Error('there is no playerMatches information')
+  }
+
+  if (!puuid || puuid === '') {
+    throw new Error('there is no puuid information')
+  }
+
+  participantMatchesInformation.forEach((match: any) => {
+    const actualPlayer = match.info.participants.find((participant: any) => {
+      return participant.puuid === puuid
+    })
+
+    deaths = deaths + actualPlayer.deaths
+    kills = kills + actualPlayer.kills
+    assists = assists + actualPlayer.assists
+
+    const playerTeam = match.info.teams.find((team: any) => team.teamId === actualPlayer.teamId)
+
+    if (playerTeam.win) {
+      win++
+    } else {
+      lose++
+    }
   })
 
-  const participantMatchesInformation = await Promise.all(matchesInformationPromises)
+  const deathAvg = deaths / playerMatches.data.length
+  const killAvg = kills / playerMatches.data.length
+  const assistAvg = assists / playerMatches.data.length
 
+  return { win, lose, deathAvg, killAvg, assistAvg }
+}
+
+export const handleFindRelatedPlayers = (participantMatchesInformation: any, puuid: string): any => {
   const relatedPlayers: RelatedPlayers = { players: [], allies: [], enemies: [] }
 
-  participantMatchesInformation.forEach((match) => {
+  if (participantMatchesInformation.length === 0) {
+    throw new Error('there is no participant matches information')
+  }
+
+  if (!puuid || puuid === '') {
+    throw new Error('there is no puuid information')
+  }
+
+  participantMatchesInformation.forEach((match: any) => {
     const { info } = match
 
     const actualPlayer = match.info.participants.find((participant: any) => {
@@ -58,4 +99,38 @@ export const handleFindRelatedPlayers = async (playerMatches: any, puuid: string
   })
 
   return results
+}
+
+export const handleResumeChampions = (participantMatchesInformation: any, puuid: string): any => {
+  const heroes: string[] = []
+
+  if (participantMatchesInformation.length === 0) {
+    throw new Error('there is no participant matches information')
+  }
+
+  if (!puuid || puuid === '') {
+    throw new Error('there is no puuid information')
+  }
+
+  participantMatchesInformation.forEach((match: any) => {
+    const actualPlayer = match.info.participants.find((participant: any) => {
+      return participant.puuid === puuid
+    })
+
+    heroes.push(actualPlayer.championName)
+  })
+
+  const heroesWithCount = Array.from(new Set(heroes)).map(hero => {
+    let count = 0
+
+    for (const innerHero of heroes) {
+      if (innerHero === hero) {
+        count++
+      }
+    }
+
+    return { hero, count }
+  })
+
+  return heroesWithCount
 }

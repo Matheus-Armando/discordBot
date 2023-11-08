@@ -3,7 +3,7 @@ import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fa
 import { getApi } from '../service'
 import { type ByPuuid } from '../types'
 import { ROUTE_PATH } from '../constants'
-import { handleFindRelatedPlayers } from '../shared/matches'
+import { handleFindRelatedPlayers, handleMatchesResume, handleResumeChampions } from '../shared/matches'
 
 export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
   server.get('/by-puuid', async function handler (request: FastifyRequest, reply) {
@@ -85,11 +85,19 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
         return await reply.code(400).send({ error: 'This player has no matches' })
       }
 
-      const results = await handleFindRelatedPlayers(playerMatches, puuid)
+      const matchesInformationPromises = await playerMatches.data.map(async (matchId: string) => {
+        const matchInformation = await api.get(`${ROUTE_PATH}/${matchId}`)
+        return matchInformation.data
+      })
+
+      const participantMatchesInformation = await Promise.all(matchesInformationPromises)
+
+      const results = handleFindRelatedPlayers(participantMatchesInformation, puuid)
 
       return results
-    } catch {
-      return await reply.code(500).send({ error: 'Internal server error' })
+    } catch (err) {
+      console.log(err)
+      return await reply.code(500).send({ err, error: 'Internal server error' })
     }
   })
 
@@ -155,35 +163,9 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
 
       const participantMatchesInformation = await Promise.all(matchesInformationPromises)
 
-      let win = 0
-      let lose = 0
-      let deaths = 0
-      let kills = 0
-      let assists = 0
+      const results = handleMatchesResume(participantMatchesInformation as [], playerMatches, puuid)
 
-      participantMatchesInformation.forEach((match) => {
-        const actualPlayer = match.info.participants.find((participant: any) => {
-          return participant.puuid === puuid
-        })
-
-        deaths = deaths + actualPlayer.deaths
-        kills = kills + actualPlayer.kills
-        assists = assists + actualPlayer.assists
-
-        const playerTeam = match.info.teams.find((team: any) => team.teamId === actualPlayer.teamId)
-
-        if (playerTeam.win) {
-          win++
-        } else {
-          lose++
-        }
-      })
-
-      const deathAvg = deaths / playerMatches.data.length
-      const killAvg = kills / playerMatches.data.length
-      const assistAvg = assists / playerMatches.data.length
-
-      return { win, lose, deathAvg, killAvg, assistAvg }
+      return results
     } catch {
       return await reply.code(500).send({ error: 'Internal server error' })
     }
@@ -215,29 +197,10 @@ export const matchesRoutes = async (server: FastifyInstance): Promise<any> => {
       })
 
       const participantMatchesInformation = await Promise.all(matchesInformationPromises)
-      const heroes: string[] = []
 
-      participantMatchesInformation.forEach((match) => {
-        const actualPlayer = match.info.participants.find((participant: any) => {
-          return participant.puuid === puuid
-        })
+      const results = handleResumeChampions(participantMatchesInformation, puuid)
 
-        heroes.push(actualPlayer.championName)
-      })
-
-      const heroesWithCount = Array.from(new Set(heroes)).map(hero => {
-        let count = 0
-
-        for (const innerHero of heroes) {
-          if (innerHero === hero) {
-            count++
-          }
-        }
-
-        return { hero, count }
-      })
-
-      return heroesWithCount
+      return results
     } catch {
       return await reply.code(500).send({ error: 'Internal server error' })
     }
